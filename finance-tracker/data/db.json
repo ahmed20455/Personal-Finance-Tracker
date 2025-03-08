@@ -1,18 +1,10 @@
 {
   "transactions": [
     {
-      "id": "708a",
-      "description": "Salary",
-      "amount": 1000,
-      "type": "income",
-      "category": "Work",
-      "date": "2025-03-08"
-    },
-    {
       "id": "5bc8",
       "description": "Medicine",
       "amount": 100,
-      "type": "expense",
+      "type": "income",
       "category": "Medicine",
       "date": "2025-03-08"
     },

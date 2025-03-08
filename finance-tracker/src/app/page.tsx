@@ -90,7 +90,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar transactions={transactions || []} />
+      <Navbar
+        transactions={transactions || []}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <div className="p-6 max-w-7xl mx-auto flex-grow w-full">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Summary</h2>

@@ -9,9 +9,11 @@ import Papa from 'papaparse';
 
 interface NavbarProps {
   transactions: Transaction[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
-const Navbar = ({ transactions }: NavbarProps) => {
+const Navbar = ({ transactions, searchQuery, setSearchQuery }: NavbarProps) => {
   const router = useRouter();
   const { currency, symbol, setCurrency } = useCurrency();
   const { theme, toggleTheme } = useTheme();
@@ -63,6 +65,8 @@ const Navbar = ({ transactions }: NavbarProps) => {
             <input
               type="text"
               placeholder="Search transactions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
