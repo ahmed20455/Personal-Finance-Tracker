@@ -1,6 +1,12 @@
 {
-    "transactions": [
-      { "id": 1, "description": "Salary", "amount": 3000, "type": "income", "category": "Work", "date": "2025-03-01" },
-      { "id": 2, "description": "Groceries", "amount": 150, "type": "expense", "category": "Food", "date": "2025-03-02" }
-    ]
-  }
+  "transactions": [
+    {
+      "id": "2863",
+      "description": "Medicine ",
+      "amount": 100,
+      "type": "income",
+      "category": "Medicine",
+      "date": "2025-03-08"
+    }
+  ]
+}
