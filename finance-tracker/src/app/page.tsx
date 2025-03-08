@@ -11,6 +11,8 @@ import { useTheme } from '../context/ThemeContext';
 import { useTransactions } from '../hooks/useTransactions';
 import { useQueryClient } from '@tanstack/react-query';
 import { Transaction } from '../types';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Papa from 'papaparse';
 
 type Currency = 'INR' | 'USD' | 'EUR';
@@ -86,114 +88,77 @@ export default function Home() {
     return b.amount - a.amount;
   });
 
-  const exportToCSV = () => {
-    const csv = Papa.unparse(transactions || []);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'transactions.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-gray-100 dark:bg-gray-900 min-h-screen">
-      <div className="flex justify-between items-center mb-6 flex-col sm:flex-row sm:space-y-0 space-y-4">
-        <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400">Personal Finance Tracker</h1>
-        <div className="flex space-x-4 flex-col sm:flex-row sm:space-y-0 space-y-4">
+    <div className="min-h-screen flex flex-col">
+      <Navbar transactions={transactions || []} />
+      <div className="p-6 max-w-7xl mx-auto flex-grow w-full">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Summary</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <p className="text-gray-600 dark:text-gray-400">Total Income</p>
+              <p className="text-green-600 dark:text-green-400 font-bold text-lg">{symbol}{totalIncome}</p>
+            </div>
+            <div>
+              <p className="text-gray-600 dark:text-gray-400">Total Expenses</p>
+              <p className="text-red-600 dark:text-red-400 font-bold text-lg">{symbol}{totalExpenses}</p>
+            </div>
+            <div>
+              <p className="text-gray-600 dark:text-gray-400">Net Balance</p>
+              <p className={`${netBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-bold text-lg`}>
+                {symbol}{netBalance}
+              </p>
+            </div>
+          </div>
+        </div>
+        <FinanceChart transactions={transactions || []} />
+        <CategoryBreakdown transactions={transactions || []} />
+        <TransactionForm />
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search by description or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 w-full border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
+          />
+        </div>
+        <div className="mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
           <div>
-            <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Currency:</label>
+            <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Filter by Type:</label>
             <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as Currency)}
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value as 'all' | 'income' | 'expense')}
               className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             >
-              <option value="INR">INR (₹)</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
+              <option value="all">All</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
             </select>
           </div>
-          <button
-            onClick={toggleTheme}
-            className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
-          </button>
-          <button
-            onClick={exportToCSV}
-            className="p-2 border rounded-md bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-          >
-            Export to CSV
-          </button>
-        </div>
-      </div>
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Summary</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <p className="text-gray-600 dark:text-gray-400">Total Income</p>
-            <p className="text-green-600 dark:text-green-400 font-bold">{symbol}{totalIncome}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 dark:text-gray-400">Total Expenses</p>
-            <p className="text-red-600 dark:text-red-400 font-bold">{symbol}{totalExpenses}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 dark:text-gray-400">Net Balance</p>
-            <p className={`${netBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-bold`}>
-              {symbol}{netBalance}
-            </p>
+            <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Sort by:</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'amount')}
+              className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            >
+              <option value="date">Date</option>
+              <option value="amount">Amount</option>
+            </select>
           </div>
         </div>
-      </div>
-      <FinanceChart transactions={transactions || []} />
-      <CategoryBreakdown transactions={transactions || []} />
-      <TransactionForm />
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search by description or category..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 w-full border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
-        />
-      </div>
-      <div className="mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-        <div>
-          <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Filter by Type:</label>
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value as 'all' | 'income' | 'expense')}
-            className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            <option value="all">All</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-        </div>
-        <div>
-          <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Sort by:</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'date' | 'amount')}
-            className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            <option value="date">Date</option>
-            <option value="amount">Amount</option>
-          </select>
+        <div className="mt-6">
+          {sortedTransactions?.length ? (
+            sortedTransactions.map((transaction: Transaction) => (
+              <TransactionCard key={transaction.id} transaction={transaction} />
+            ))
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400 text-center">No transactions found.</p>
+          )}
         </div>
       </div>
-      <div className="mt-6">
-        {sortedTransactions?.length ? (
-          sortedTransactions.map((transaction: Transaction) => (
-            <TransactionCard key={transaction.id} transaction={transaction} />
-          ))
-        ) : (
-          <p className="text-gray-500 dark:text-gray-400 text-center">No transactions found.</p>
-        )}
-      </div>
+      <Footer />
     </div>
   );
 }

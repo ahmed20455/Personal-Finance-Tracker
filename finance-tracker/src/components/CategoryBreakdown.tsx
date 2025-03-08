@@ -10,24 +10,23 @@ interface CategoryBreakdownProps {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ transactions }) => {
-  // Aggregate expenses by category
   const expenseData = transactions
     .filter((t) => t.type === 'expense')
-    .reduce((acc, transaction) => {
+    .reduce((acc: { name: string; value: number }[], transaction: Transaction) => {
       const existing = acc.find((entry) => entry.name === transaction.category);
       if (existing) {
         existing.value += transaction.amount;
-      } else {
-        acc.push({ name: transaction.category, value: transaction.amount });
+        return acc;
       }
+      acc.push({ name: transaction.category, value: transaction.amount });
       return acc;
-    }, [] as { name: string; value: number }[]);
+    }, []);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Expenses by Category</h2>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Expenses by Category</h2>
       {expenseData.length ? (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={400}>
           <PieChart>
             <Pie
               data={expenseData}
@@ -35,7 +34,7 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ transactions }) =
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={80}
+              outerRadius={100}
               fill="#8884d8"
               label
             >
@@ -48,7 +47,7 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ transactions }) =
           </PieChart>
         </ResponsiveContainer>
       ) : (
-        <p className="text-gray-500 text-center">No expenses to display.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center">No expenses to display.</p>
       )}
     </div>
   );
