@@ -11,8 +11,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.67.1",
     "next": "15.2.1",
+    "papaparse": "^5.5.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

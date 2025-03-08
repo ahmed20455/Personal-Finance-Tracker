@@ -1,12 +1,36 @@
 {
   "transactions": [
     {
-      "id": "2863",
-      "description": "Medicine ",
-      "amount": 100,
+      "id": "708a",
+      "description": "Salary",
+      "amount": 1000,
       "type": "income",
+      "category": "Work",
+      "date": "2025-03-08"
+    },
+    {
+      "id": "5bc8",
+      "description": "Medicine",
+      "amount": 100,
+      "type": "expense",
       "category": "Medicine",
       "date": "2025-03-08"
+    },
+    {
+      "id": "2d2f",
+      "description": "Movie",
+      "amount": 250,
+      "type": "expense",
+      "category": "Expense",
+      "date": "2025-03-07"
+    },
+    {
+      "id": "7c43",
+      "description": "fee",
+      "amount": 200,
+      "type": "expense",
+      "category": "fee",
+      "date": "2025-02-25"
     }
   ]
 }

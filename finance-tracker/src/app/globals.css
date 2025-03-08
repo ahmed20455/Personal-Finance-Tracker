@@ -1,3 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Base styles */
+html {
+  @apply bg-gray-100 text-gray-900;
+}
+
+html.dark {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Custom dark mode adjustments */
+.dark .bg-white {
+  @apply bg-gray-800;
+}
+
+/* Adjust text colors for dark mode without overriding Tailwind utilities */
+.dark .text-gray-600 {
+  color: #9CA3AF; /* Equivalent to text-gray-400 */
+}
+
+.dark .text-gray-500 {
+  color: #D1D5DB; /* Equivalent to text-gray-300 */
+}
+
+.dark .text-gray-400 {
+  color: #E5E7EB; /* Equivalent to text-gray-200 */
+}
+
+.dark .bg-gray-200 {
+  @apply bg-gray-700;
+}
+
+.dark .bg-gray-300 {
+  @apply bg-gray-600;
+}
+
+.dark .text-blue-600 {
+  color: #60A5FA; /* Equivalent to text-blue-400 */
+}
+
+.dark .text-red-500 {
+  color: #FCA5A5; /* Equivalent to text-red-300 */
+}
+
+.dark .text-green-600 {
+  color: #34D399; /* Equivalent to text-green-400 */
+}
+
+.dark .text-red-600 {
+  color: #F87171; /* Equivalent to text-red-400 */
+}

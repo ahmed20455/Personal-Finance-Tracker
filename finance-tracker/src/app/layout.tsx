@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import QueryClientWrapper from '../components/QueryClientWrapper';
+import { CurrencyProvider } from '../context/CurrencyContext';
+import { ThemeProvider } from '../context/ThemeContext';
 
 export const metadata: Metadata = {
   title: 'Personal Finance Tracker',
@@ -14,9 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="font-sans antialiased">
         <QueryClientWrapper>
-          {children}
+          <CurrencyProvider>
+            <ThemeProvider>
+              {children}
+            </ThemeProvider>
+          </CurrencyProvider>
         </QueryClientWrapper>
       </body>
     </html>
