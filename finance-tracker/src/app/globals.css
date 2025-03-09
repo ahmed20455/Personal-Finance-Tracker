@@ -11,6 +11,10 @@ html.dark {
   @apply bg-gray-900 text-gray-100;
 }
 
+html.ocean {
+  @apply bg-gradient-to-br from-blue-100 to-teal-100 text-gray-900;
+}
+
 /* Custom dark mode adjustments */
 .dark .bg-white {
   @apply bg-gray-800;
@@ -51,6 +55,35 @@ html.dark {
 
 .dark .text-red-600 {
   color: #F87171; /* Equivalent to text-red-400 */
+}
+
+/* Ocean theme adjustments */
+.ocean .bg-white {
+  @apply bg-teal-50;
+}
+
+.ocean .text-gray-600 {
+  color: #6B7280; /* Slightly darker for contrast */
+}
+
+.ocean .text-gray-500 {
+  color: #9CA3AF;
+}
+
+.ocean .text-gray-400 {
+  color: #D1D5DB;
+}
+
+.ocean .bg-gray-200 {
+  @apply bg-teal-100;
+}
+
+.ocean .bg-gray-300 {
+  @apply bg-teal-200;
+}
+
+.ocean .text-blue-600 {
+  color: #3B82F6; /* Brighter blue for ocean theme */
 }
 
 /* Animations */
@@ -95,5 +128,13 @@ html.dark {
 }
 
 .dark .bg-indigo-600:hover {
+  @apply bg-indigo-500;
+}
+
+.ocean .bg-blue-600:hover {
+  @apply bg-blue-500;
+}
+
+.ocean .bg-indigo-600:hover {
   @apply bg-indigo-500;
 }

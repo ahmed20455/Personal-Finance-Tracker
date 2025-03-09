@@ -1,19 +1,27 @@
 {
   "transactions": [
     {
-      "id": "e1d3",
-      "description": "gym",
+      "id": "e531",
+      "description": "play",
       "amount": 1000,
       "type": "income",
-      "category": "gym",
-      "date": "2025-03-08"
+      "category": "play",
+      "date": "2025-03-09"
     },
     {
-      "id": "8344",
-      "description": "rent",
+      "id": "8ce5",
+      "description": "salary",
+      "amount": 1000,
+      "type": "expense",
+      "category": "salary",
+      "date": "2025-02-10"
+    },
+    {
+      "id": "5d29",
+      "description": "gym",
       "amount": 200,
       "type": "expense",
-      "category": "rent",
+      "category": "gyn",
       "date": "2025-03-09"
     }
   ]

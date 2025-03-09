@@ -16,7 +16,7 @@ export default function Navbar({
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, setTheme } = useTheme();
   const { currency, setCurrency } = useCurrency();
   const { data: fetchedTransactions, isLoading, error } = useTransactions();
 
@@ -27,7 +27,6 @@ export default function Navbar({
       alert('No transactions to export.');
       return;
     }
-
     const csv = Papa.unparse(fetchedTransactions);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -94,12 +93,16 @@ export default function Navbar({
             <option value="USD">$ USD</option>
             <option value="EUR">€ EUR</option>
           </select>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full bg-gray-600 hover:bg-gray-500 transition-colors"
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as Theme)}
+            className="p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="ocean">Ocean</option>
+          </select>
+
           <button
             onClick={handleExportToCSV}
             className="p-2 bg-green-600 hover:bg-green-700 rounded-md transition-colors"

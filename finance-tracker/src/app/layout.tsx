@@ -1,6 +1,6 @@
 import { ThemeProvider } from '../context/ThemeContext';
 import { CurrencyProvider } from '../context/CurrencyContext';
-import QueryClientWrapper from './QueryClientWrapper'; // New wrapper component
+import QueryClientWrapper from './QueryClientWrapper';
 import './globals.css';
 
 export default function RootLayout({

@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar transactions={[]} searchQuery="" setSearchQuery={() => {}} exportToCSV={() => {}} />
+      <Navbar transactions={[]} searchQuery="" setSearchQuery={() => {}} />
 
       {/* Hero Section with Background Image */}
       <section

@@ -4,7 +4,8 @@ import { useTheme } from '../../../context/ThemeContext';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
 import { useTransactions } from '../../../hooks/useTransactions';
-
+import BudgetPlanner from '@/components/BudgetPlanner';
+import SpendingInsights from '@/components/SpendingInsights';
 export default function Summary() {
   const { theme } = useTheme();
   const { data: transactions, isLoading, error } = useTransactions();
@@ -29,6 +30,8 @@ export default function Summary() {
             <div><p className="text-gray-600 dark:text-gray-400">Net Balance</p><p className={`${netBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-bold text-lg`}>₹{netBalance}</p></div>
           </div>
         </div>
+        <BudgetPlanner/>
+        <SpendingInsights/>
       </div>
       <Footer />
     </div>
