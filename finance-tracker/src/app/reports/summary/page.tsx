@@ -5,7 +5,7 @@ import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
 import { useTransactions } from '../../../hooks/useTransactions';
 import BudgetPlanner from '@/components/BudgetPlanner';
-import SpendingInsights from '@/components/SpendingInsights';
+
 export default function Summary() {
   const { theme } = useTheme();
   const { data: transactions, isLoading, error } = useTransactions();
@@ -31,7 +31,7 @@ export default function Summary() {
           </div>
         </div>
         <BudgetPlanner/>
-        <SpendingInsights/>
+        
       </div>
       <Footer />
     </div>

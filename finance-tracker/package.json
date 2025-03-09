@@ -17,6 +17,7 @@
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.0.0",
     "react-draggable": "^4.4.6",
+    "react-swipeable": "^7.0.2",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1"
   },

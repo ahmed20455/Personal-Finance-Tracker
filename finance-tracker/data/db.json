@@ -15,14 +15,6 @@
       "type": "expense",
       "category": "salary",
       "date": "2025-02-10"
-    },
-    {
-      "id": "5d29",
-      "description": "gym",
-      "amount": 200,
-      "type": "expense",
-      "category": "gyn",
-      "date": "2025-03-09"
     }
   ]
 }
