@@ -1,167 +1,156 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import TransactionCard from '../components/TransactionCard';
-import TransactionForm from '../components/TransactionForm';
-import FinanceChart from '../components/FinanceChart';
-import CategoryBreakdown from '@/components/CategoryBreakdown';
-import { useCurrency } from '../context/CurrencyContext';
 import { useTheme } from '../context/ThemeContext';
-import { useTransactions } from '../hooks/useTransactions';
-import { useQueryClient } from '@tanstack/react-query';
-import { Transaction } from '../types';
+import { useCurrency } from '../context/CurrencyContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import Papa from 'papaparse';
-
-type Currency = 'INR' | 'USD' | 'EUR';
 
 export default function Home() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { currency, symbol, setCurrency } = useCurrency();
   const { theme, toggleTheme } = useTheme();
-
-  const initialFilterType = (searchParams.get('filter') as 'all' | 'income' | 'expense') || 'all';
-  const initialSortBy = (searchParams.get('sort') as 'date' | 'amount') || 'date';
-
-  const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>(initialFilterType);
-  const [sortBy, setSortBy] = useState<'date' | 'amount'>(initialSortBy);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const { data: transactions, error, isLoading } = useTransactions();
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('filter', filterType);
-    params.set('sort', sortBy);
-    router.push(`/?${params.toString()}`, { scroll: false });
-  }, [filterType, sortBy, router, searchParams]);
-
-  if (isLoading) return (
-    <div className="p-6 bg-gray-200 dark:bg-gray-700">
-      <div className="animate-pulse space-y-4">
-        <div className="h-16 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
-        <div className="h-16 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
-      </div>
-    </div>
-  );
-  if (error) return (
-    <div className="p-6 bg-red-100 dark:bg-red-900 text-red-500 dark:text-red-300">
-      Error: {error.message}
-      <button
-        onClick={() => queryClient.invalidateQueries({ queryKey: ['transactions'] })}
-        className="ml-4 text-blue-600 dark:text-blue-400 underline"
-      >
-        Retry
-      </button>
-    </div>
-  );
-
-  const totalIncome = transactions?.reduce(
-    (sum, t) => (t.type === 'income' ? sum + t.amount : sum),
-    0
-  ) || 0;
-  const totalExpenses = transactions?.reduce(
-    (sum, t) => (t.type === 'expense' ? sum + t.amount : sum),
-    0
-  ) || 0;
-  const netBalance = totalIncome - totalExpenses;
-
-  const filteredTransactions = transactions
-    ?.filter((transaction) =>
-      filterType === 'all' ? true : transaction.type === filterType
-    )
-    .filter((transaction) =>
-      searchQuery
-        ? transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          transaction.category.toLowerCase().includes(searchQuery.toLowerCase())
-        : true
-    );
-
-  const sortedTransactions = [...(filteredTransactions || [])].sort((a, b) => {
-    if (sortBy === 'date') {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-    return b.amount - a.amount;
-  });
+  const { currency, symbol, setCurrency } = useCurrency();
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        transactions={transactions || []}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      <div className="p-6 max-w-7xl mx-auto flex-grow w-full">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Summary</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div>
-              <p className="text-gray-600 dark:text-gray-400">Total Income</p>
-              <p className="text-green-600 dark:text-green-400 font-bold text-lg">{symbol}{totalIncome}</p>
-            </div>
-            <div>
-              <p className="text-gray-600 dark:text-gray-400">Total Expenses</p>
-              <p className="text-red-600 dark:text-red-400 font-bold text-lg">{symbol}{totalExpenses}</p>
-            </div>
-            <div>
-              <p className="text-gray-600 dark:text-gray-400">Net Balance</p>
-              <p className={`${netBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-bold text-lg`}>
-                {symbol}{netBalance}
+      <Navbar transactions={[]} searchQuery="" setSearchQuery={() => {}} exportToCSV={() => {}} />
+
+      {/* Hero Section with Background Image */}
+      <section
+        className="relative bg-cover bg-center h-[600px] flex items-center justify-center text-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1554224155-8d04cb21a1c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')`,
+          backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+          backgroundBlendMode: 'overlay',
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4 animate-fade-in text-white drop-shadow-lg">
+            Welcome to Finance Tracker
+          </h1>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white drop-shadow-md">
+            Take control of your finances with our cutting-edge, enterprise-grade tracking tool. Designed by top MNC web developers, Finance Tracker offers seamless monitoring of income, expenses, and savings with powerful insights.
+          </p>
+          <div className="space-x-4">
+            <button
+              onClick={() => (window.location.href = '/transactions')}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
+            >
+              Get Started
+            </button>
+            <button
+              onClick={() => (window.location.href = '/reports/summary')}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
+            >
+              View Summary
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section with Larger Icons */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-gray-100">Why Choose Finance Tracker?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3003/3003039.png"
+              alt="Real-Time Tracking"
+              className="w-16 h-16 mx-auto mb-6"
+            />
+            <h3 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-100">Real-Time Tracking</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
+              Monitor your income and expenses with real-time updates, powered by robust backend technology.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3161/3161358.png"
+              alt="Advanced Analytics"
+              className="w-16 h-16 mx-auto mb-6"
+            />
+            <h3 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-100">Advanced Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
+              Gain deep insights with detailed reports and interactive charts, crafted by MNC experts.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png"
+              alt="Secure & Scalable"
+              className="w-16 h-16 mx-auto mb-6"
+            />
+            <h3 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-100">Secure & Scalable</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
+              Built with enterprise-level security and scalability, trusted by finance professionals worldwide.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section with Avatars */}
+      <section className="bg-gray-100 dark:bg-gray-900 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-12 text-gray-900 dark:text-gray-100">What Our Users Say</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="User Avatar"
+                className="w-16 h-16 rounded-full mx-auto mb-4"
+              />
+              <p className="text-gray-600 dark:text-gray-400 italic mb-4">
+                "Finance Tracker transformed how I manage my finances. The real-time updates are a game-changer!"
               </p>
+              <p className="font-semibold text-gray-900 dark:text-gray-100">- John Doe, CFO at TechCorp</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+              <img
+                src="https://randomuser.me/api/portraits/women/44.jpg"
+                alt="User Avatar"
+                className="w-16 h-16 rounded-full mx-auto mb-4"
+              />
+              <p className="text-gray-600 dark:text-gray-400 italic mb-4">
+                "The analytics are top-notch, and the design feels like it’s from a top MNC. Highly recommend!"
+              </p>
+              <p className="font-semibold text-gray-900 dark:text-gray-100">- Jane Smith, Freelancer</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+              <img
+                src="https://randomuser.me/api/portraits/men/65.jpg"
+                alt="User Avatar"
+                className="w-16 h-16 rounded-full mx-auto mb-4"
+              />
+              <p className="text-gray-600 dark:text-gray-400 italic mb-4">
+                "A must-have tool for anyone serious about financial planning. It’s intuitive and powerful!"
+              </p>
+              <p className="font-semibold text-gray-900 dark:text-gray-100">- Alex Brown, Entrepreneur</p>
             </div>
           </div>
         </div>
-        <FinanceChart transactions={transactions || []} />
-        <CategoryBreakdown transactions={transactions || []} />
-        <TransactionForm />
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search by description or category..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 w-full border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
-          />
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <h2 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">Ready to Take Control?</h2>
+        <p className="mb-8 max-w-2xl mx-auto text-lg text-gray-700 dark:text-gray-300">
+          Start managing your finances today with Finance Tracker. Explore your transactions, generate reports, and visualize your progress with ease.
+        </p>
+        <div className="space-x-4">
+          <button
+            onClick={() => (window.location.href = '/transactions')}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
+          >
+            Get Started
+          </button>
+          <button
+            onClick={() => (window.location.href = '/reports/summary')}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
+          >
+            View Reports
+          </button>
         </div>
-        <div className="mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-          <div>
-            <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Filter by Type:</label>
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value as 'all' | 'income' | 'expense')}
-              className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-            >
-              <option value="all">All</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-          </div>
-          <div>
-            <label className="mr-2 font-medium text-gray-600 dark:text-gray-300">Sort by:</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'amount')}
-              className="p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-            >
-              <option value="date">Date</option>
-              <option value="amount">Amount</option>
-            </select>
-          </div>
-        </div>
-        <div className="mt-6">
-          {sortedTransactions?.length ? (
-            sortedTransactions.map((transaction: Transaction) => (
-              <TransactionCard key={transaction.id} transaction={transaction} />
-            ))
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400 text-center">No transactions found.</p>
-          )}
-        </div>
-      </div>
+      </section>
+
       <Footer />
     </div>
   );

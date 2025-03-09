@@ -52,3 +52,48 @@ html.dark {
 .dark .text-red-600 {
   color: #F87171; /* Equivalent to text-red-400 */
 }
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.8s ease-out;
+}
+
+/* Custom styles for hero overlay */
+.hero-overlay {
+  @apply absolute inset-0 bg-black opacity-50;
+}
+
+/* Ensure buttons pop in dark mode */
+.dark .bg-blue-600:hover {
+  @apply bg-blue-500;
+}
+
+.dark .bg-indigo-600:hover {
+  @apply bg-indigo-500;
+}
