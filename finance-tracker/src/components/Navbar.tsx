@@ -11,32 +11,16 @@ interface NavbarProps {
   transactions: Transaction[];
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  exportToCSV: () => void;
 }
 
-const Navbar = ({ transactions, searchQuery, setSearchQuery }: NavbarProps) => {
+const Navbar = ({ transactions, searchQuery, setSearchQuery, exportToCSV }: NavbarProps) => {
   const router = useRouter();
   const { currency, symbol, setCurrency } = useCurrency();
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isReportsOpen, setIsReportsOpen] = useState(false);
   const reportsRef = useRef<HTMLDivElement>(null);
-
-  const exportToCSV = () => {
-    const formattedTransactions = transactions.map((transaction) => {
-      const date = new Date(transaction.date);
-      const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-      return { ...transaction, date: formattedDate };
-    });
-    const csv = Papa.unparse(formattedTransactions);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'transactions.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -1,13 +1,7 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import QueryClientWrapper from '../components/QueryClientWrapper';
-import { CurrencyProvider } from '../context/CurrencyContext';
 import { ThemeProvider } from '../context/ThemeContext';
-
-export const metadata: Metadata = {
-  title: 'Personal Finance Tracker',
-  description: 'Track your income and expenses',
-};
+import { CurrencyProvider } from '../context/CurrencyContext';
+import QueryClientWrapper from './QueryClientWrapper'; // New wrapper component
+import './globals.css';
 
 export default function RootLayout({
   children,
@@ -15,14 +9,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body>
         <QueryClientWrapper>
-          <CurrencyProvider>
-            <ThemeProvider>
-              {children}
-            </ThemeProvider>
-          </CurrencyProvider>
+          <ThemeProvider>
+            <CurrencyProvider>{children}</CurrencyProvider>
+          </ThemeProvider>
         </QueryClientWrapper>
       </body>
     </html>

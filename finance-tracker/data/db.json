@@ -1,28 +1,20 @@
 {
   "transactions": [
     {
-      "id": "5bc8",
-      "description": "Medicine",
-      "amount": 100,
+      "id": "e1d3",
+      "description": "gym",
+      "amount": 1000,
       "type": "income",
-      "category": "Medicine",
+      "category": "gym",
       "date": "2025-03-08"
     },
     {
-      "id": "2d2f",
-      "description": "Movie",
-      "amount": 250,
-      "type": "expense",
-      "category": "Expense",
-      "date": "2025-03-07"
-    },
-    {
-      "id": "7c43",
-      "description": "fee",
+      "id": "8344",
+      "description": "rent",
       "amount": 200,
       "type": "expense",
-      "category": "fee",
-      "date": "2025-02-25"
+      "category": "rent",
+      "date": "2025-03-09"
     }
   ]
 }

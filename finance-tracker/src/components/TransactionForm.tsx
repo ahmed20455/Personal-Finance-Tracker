@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCurrency } from '../context/CurrencyContext';
 import { Transaction } from '../types';
 
-const addTransaction = async (newTransaction: Omit<Transaction, 'id'>): Promise<Transaction> => {
+const addTransaction = async (newTransaction: Omit<Transaction, 'id'>) => {
   const response = await fetch('https://symmetrical-space-barnacle-jp9px4x7qpw3jqq5-3001.app.github.dev/transactions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -16,96 +17,58 @@ const addTransaction = async (newTransaction: Omit<Transaction, 'id'>): Promise<
 
 export default function TransactionForm() {
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState({
-    description: '',
-    amount: 0,
-    type: 'income' as 'income' | 'expense',
-    category: '',
-    date: new Date().toISOString().split('T')[0], // Default to today
-  });
+  const { symbol } = useCurrency();
+
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [type, setType] = useState<'income' | 'expense'>('income');
+  const [category, setCategory] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const mutation = useMutation({
     mutationFn: addTransaction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      setFormData({
-        description: '',
-        amount: 0,
-        type: 'income',
-        category: '',
-        date: new Date().toISOString().split('T')[0],
-      });
+      setDescription('');
+      setAmount('');
+      setType('income');
+      setCategory('');
+      setDate(new Date().toISOString().split('T')[0]);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate(formData);
+    if (!description || !amount || !category) {
+      alert('Please fill in all fields.');
+      return;
+    }
+    mutation.mutate({
+      description,
+      amount: parseFloat(amount),
+      type,
+      category,
+      date,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Add Transaction</h2>
-      <div className="grid gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <input
-            type="text"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Amount</label>
-          <input
-            type="number"
-            value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Type</label>
-          <select
-            value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value as 'income' | 'expense' })}
-            className="mt-1 p-2 w-full border rounded-md"
-          >
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
-          <input
-            type="text"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Date</label>
-          <input
-            type="date"
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          disabled={mutation.isPending}
-        >
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Add New Transaction</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
+        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" step="0.01" />
+        <select value={type} onChange={(e) => setType(e.target.value as 'income' | 'expense')} className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Category" className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
+        <button type="submit" disabled={mutation.isPending} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300 disabled:opacity-50">
           {mutation.isPending ? 'Adding...' : 'Add Transaction'}
         </button>
-      </div>
-    </form>
+        {mutation.isError && <p className="text-red-500 dark:text-red-400">Error: {(mutation.error as Error).message}</p>}
+      </form>
+    </div>
   );
 }
